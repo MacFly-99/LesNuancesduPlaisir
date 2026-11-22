@@ -3,11 +3,12 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/ui/fade-in";
 import { services } from "@/data/services";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "lucide-react";
 
 export default function Home() {
   return (
     <main className="flex flex-col overflow-hidden">
+      
       {/* ================= HERO SECTION ================= */}
       <section className="relative flex flex-col items-center justify-center min-h-[75vh] px-4 py-20 md:py-32 text-center">
         <FadeIn>
@@ -44,7 +45,6 @@ export default function Home() {
             
             {/* Image abstraite (Asymétrique) */}
             <FadeIn delay={0.2} className="relative h-100 md:h-150 w-full rounded-3xl overflow-hidden shadow-2xl">
-              {/* Remplacer par ton image réelle si besoin, ici on met un placeholder stylé */}
               <Image 
                 src="/abstract.jpg" 
                 alt="Univers sensoriel et abstrait" 
@@ -98,25 +98,37 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <FadeIn key={service.title} delay={0.2 + index * 0.2}>
-                <div className="group h-full bg-white p-8 md:p-10 rounded-3xl border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 flex flex-col">
-                  <h3 className="text-2xl font-semibold text-secondary mb-4 group-hover:text-primary transition-colors">
-                    {service.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed mb-8 flex-1">
-                    {service.description}
-                  </p>
-                  
-                  {/* Badges Tarif / Durée */}
-                  <div className="flex items-center justify-between pt-6 border-t border-border mt-auto">
-                    <span className="font-serif text-2xl font-medium text-primary">
-                      {service.price}
-                    </span>
-                    <span className="bg-sage-light text-sage-dark px-3 py-1 rounded-full text-sm font-medium">
-                      {service.duration}
-                    </span>
+              <FadeIn key={service.title} delay={0.2 + index * 0.2} className="h-full">
+                {/* On enveloppe la carte dans un Link avec le paramètre URL */}
+                <Link 
+                  href={`/contact?service=${encodeURIComponent(service.title)}`}
+                  className="block h-full outline-none focus-visible:ring-2 focus-visible:ring-sage rounded-3xl"
+                >
+                  <div className="group h-full bg-white p-8 md:p-10 rounded-3xl border border-border/50 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-primary/30 flex flex-col cursor-pointer">
+                    <h3 className="text-2xl font-semibold text-secondary mb-4 group-hover:text-primary transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-muted-foreground leading-relaxed mb-8 flex-1">
+                      {service.description}
+                    </p>
+                    
+                    {/* Badges Tarif / Durée */}
+                    <div className="flex items-center justify-between pt-6 border-t border-border mt-auto mb-4">
+                      <span className="font-serif text-2xl font-medium text-primary">
+                        {service.price}
+                      </span>
+                      <span className="bg-sage-light text-sage-dark px-3 py-1 rounded-full text-sm font-medium">
+                        {service.duration}
+                      </span>
+                    </div>
+
+                    {/* Indication visuelle de clic */}
+                    <div className="flex items-center text-sm font-medium text-sage-dark mt-2 group-hover:text-primary transition-colors">
+                      Se renseigner sur cette séance
+                      <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </div>
                   </div>
-                </div>
+                </Link>
               </FadeIn>
             ))}
           </div>
