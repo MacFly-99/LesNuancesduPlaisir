@@ -29,6 +29,12 @@
   --color-input: hsl(30 20% 85%);
   --color-ring: hsl(14 49% 59%);
 
+  --color-sage: hsl(135 20% 55%);
+  --color-sage-foreground: hsl(0 0% 100%);
+  
+  --color-sage-light: hsl(135 25% 90%);
+  --color-sage-dark: hsl(135 25% 35%);
+
   --radius-lg: 1rem;
   --radius-md: calc(1rem - 2px);
   --radius-sm: calc(1rem - 4px);
