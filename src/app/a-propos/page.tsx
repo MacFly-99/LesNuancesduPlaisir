@@ -55,10 +55,10 @@ export default function AProposPage() {
               </div>
             </FadeIn>
 
-            {/* Image (On réutilise abstract.jpg ou une autre) */}
+            {/* Image */}
             <FadeIn delay={0.4} className="order-1 lg:order-2 relative h-100 md:h-150 rounded-3xl overflow-hidden shadow-2xl">
               <Image 
-                src="/abstract.jpg" 
+                src="/about.jpg" 
                 alt="Approche sensorielle et spirituelle" 
                 fill 
                 className="object-cover"
