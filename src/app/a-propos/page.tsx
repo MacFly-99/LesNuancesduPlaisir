@@ -56,7 +56,7 @@ export default function AProposPage() {
             </FadeIn>
 
             {/* Image */}
-            <FadeIn delay={0.4} className="order-1 lg:order-2 relative h-100 md:h-150 rounded-3xl overflow-hidden shadow-2xl">
+            <FadeIn delay={0.4} className="relative order-1 lg:order-2 h-100 md:h-150 rounded-3xl overflow-hidden shadow-2xl">
               <Image 
                 src="/about.jpg" 
                 alt="Approche sensorielle et spirituelle" 

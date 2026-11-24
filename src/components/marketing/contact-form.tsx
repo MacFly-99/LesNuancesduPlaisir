@@ -6,31 +6,23 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
+// Le schéma Zod inclut le champ optionnel "website" (honeypot)
 const formSchema = z.object({
   name: z.string().min(2, { message: "Votre nom est requis." }),
   email: z.string().email({ message: "Adresse email invalide." }),
   message: z.string().min(10, { message: "Votre message doit faire au moins 10 caractères." }),
+  website: z.string().optional(),
 });
 
 export function ContactForm() {
   const [isLoading, setIsLoading] = useState(false);
   
-  // On récupère le paramètre "service" de l'URL
-  const searchParams = useSearchParams();
-  const serviceParam = searchParams.get("service");
-
-  // On génère le message pré-rempli s'il y a un service dans l'URL
-  const defaultMessage = serviceParam 
-    ? `Bonjour, je souhaite avoir plus d'informations concernant la prestation : "${serviceParam}".`
-    : "";
-
   const {
     register,
     handleSubmit,
@@ -41,7 +33,8 @@ export function ContactForm() {
     defaultValues: {
       name: "",
       email: "",
-      message: defaultMessage,
+      message: "",
+      website: "", // Valeur par défaut vide
     },
   });
 
@@ -55,15 +48,18 @@ export function ContactForm() {
         body: JSON.stringify(values),
       });
 
-      if (!response.ok) throw new Error('Erreur lors de l\'envoi');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erreur lors de l\'envoi');
+      }
 
       toast.success("Message envoyé avec succès !", {
         description: "Je vous répondrai dans les plus brefs délais.",
       });
       reset(); // On vide le formulaire
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Une erreur est survenue", {
-        description: "Veuillez réessayer ou me contacter par téléphone.",
+        description: error.message || "Veuillez réessayer ou me contacter par téléphone.",
       });
     } finally {
       setIsLoading(false);
@@ -73,6 +69,18 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       
+      {/* 🕵️ HONEYPOT : Champ invisible pour piéger les bots */}
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="website">Ne pas remplir ce champ</label>
+        <input
+          type="text"
+          id="website"
+          tabIndex={-1}
+          autoComplete="off"
+          {...register("website")}
+        />
+      </div>
+
       {/* Champ Nom */}
       <div className="space-y-2">
         <Label htmlFor="name" className="text-foreground/80 font-medium">Nom complet</Label>
@@ -119,7 +127,7 @@ export function ContactForm() {
       <Button 
         type="submit" 
         disabled={isLoading}
-        className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground h-12 text-base shadow-md hover:shadow-lg transition-all"
+        className="w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground h-12 text-base shadow-md hover:shadow-lg transition-all cursor-pointer"
       >
         {isLoading ? (
           <>

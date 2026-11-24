@@ -1,40 +1,40 @@
 @import "tailwindcss";
 
 @theme {
+  /* Couleurs principales */
   --color-background: hsl(30 33% 96%);
   --color-foreground: hsl(345 15% 15%);
-
   --color-card: hsl(30 33% 96%);
   --color-card-foreground: hsl(345 15% 15%);
-
   --color-popover: hsl(30 33% 96%);
   --color-popover-foreground: hsl(345 15% 15%);
-
+  
+  /* Couleurs de marque */
   --color-primary: hsl(14 49% 59%);
   --color-primary-foreground: hsl(0 0% 100%);
-
   --color-secondary: hsl(330 26% 23%);
   --color-secondary-foreground: hsl(30 33% 96%);
-
+  
+  /* Couleurs neutres */
   --color-muted: hsl(30 20% 90%);
   --color-muted-foreground: hsl(345 10% 40%);
-
   --color-accent: hsl(43 48% 58%);
   --color-accent-foreground: hsl(345 15% 15%);
-
   --color-destructive: hsl(0 84% 60%);
   --color-destructive-foreground: hsl(0 0% 100%);
-
+  
+  /* Bordures et inputs */
   --color-border: hsl(30 20% 85%);
   --color-input: hsl(30 20% 85%);
   --color-ring: hsl(14 49% 59%);
 
+  /* Vert Sauge */
   --color-sage: hsl(135 20% 55%);
   --color-sage-foreground: hsl(0 0% 100%);
-  
   --color-sage-light: hsl(135 25% 90%);
   --color-sage-dark: hsl(135 25% 35%);
 
+  /* Rayons de bordure */
   --radius-lg: 1rem;
   --radius-md: calc(1rem - 2px);
   --radius-sm: calc(1rem - 4px);
