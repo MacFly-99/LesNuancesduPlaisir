@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   
   // --- VÉRIFICATION GOOGLE SEARCH CONSOLE ---
   verification: {
-    google: "COLLE_TON_CODE_GOOGLE_ICI",
+    google: "U49wJMUJn_r5yIm-OmTaELvfNxc8FvBSlUQG7TD4KV4",
   },
 };
 
