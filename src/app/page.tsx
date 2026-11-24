@@ -1,3 +1,4 @@
+import { JsonLd } from "@/components/seo/json-ld";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,34 @@ import { services } from "@/data/services";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 
 export default function Home() {
+  // Les données structurées pour le SEO Local
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalBusiness",
+    "name": "Les Nuances du Plaisir",
+    "image": "https://lesnuancesduplaisir.vercel.app/logo.png",
+    "description": "Accompagnement en sexothérapie pour une vie intime épanouie. Séances individuelles, en couple, présentiel ou distanciel.",
+    "url": "https://lesnuancesduplaisir.vercel.app",
+    "telephone": "+33651403415",
+    "priceRange": "€€",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "9 Route des Terments",
+      "addressLocality": "Haut Valromey",
+      "postalCode": "01260",
+      "addressCountry": "FR"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "17:00"
+    }
+  };
+
   return (
     <main className="flex flex-col overflow-hidden">
+            <JsonLd data={jsonLd} />
       
       {/* ================= HERO SECTION ================= */}
       <section className="relative flex flex-col items-center justify-center min-h-[75vh] px-4 py-20 md:py-32 text-center">

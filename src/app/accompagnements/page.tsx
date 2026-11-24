@@ -1,3 +1,4 @@
+import { JsonLd } from "@/components/seo/json-ld";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FadeIn } from "@/components/ui/fade-in";
@@ -16,8 +17,40 @@ export const metadata = {
 };
 
 export default function AccompagnementsPage() {
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Pourquoi consulter un(e) sexothérapeute ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Un(e) sexothérapeute est une personne en capacité de vous apporter des renseignements précis sur votre vie sexuelle, vos désirs et plaisirs. Il/elle peut vous aider à déchiffrer des traumatismes qu'ils soient aussi bien liés à l'enfance, qu'à l'adolescence, mais aussi dans la période adulte."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "La différence entre sexothérapeute et thérapeute ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Un(e) sexothérapeute est tout simplement un(e) thérapeute spécialisé(e) dans la sexualité et la sensualité. Il/elle a pour but d'interpréter et d'analyser ce que certains comportements corporels ou verbaux peuvent traduire."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment se déroule la première séance ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Lors de la première séance, vous pouvez venir aussi bien seul(e) qu'accompagné(e). Le rôle du sexothérapeute sera d'être à l'écoute et observateur. À la fin de ce premier rendez-vous, vous aurez un récapitulatif des points à travailler."
+        }
+      }
+    ]
+  };
+
   return (
     <main className="min-h-screen bg-background overflow-hidden">
+      <JsonLd data={faqJsonLd} />
       
       {/* EN-TÊTE DE PAGE */}
       <section className="relative py-20 md:py-32 text-center px-4">
