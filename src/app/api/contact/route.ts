@@ -70,7 +70,6 @@ export async function POST(req: Request) {
 
     // 5. ENVOI DE L'EMAIL VIA RESEND
     const { data, error } = await resend.emails.send({
-      // ⚠️ REMPLACE PAR L'EMAIL DU CLIENT
       from: 'Formulaire Les Nuances <onboarding@resend.dev>', 
       to: ['isaacpro.beral@gmail.com'], 
       subject: `Nouveau message de ${name} via le site`,
