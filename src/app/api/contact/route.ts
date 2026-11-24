@@ -1,22 +1,79 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { z } from 'zod';
 
-// On initialise Resend avec la clé API
+// Initialisation de Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
+
+// --- CONFIGURATION DU RATE LIMITING ---
+const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
+const LIMIT = 5; // Max 5 requêtes
+const WINDOW_MS = 15 * 60 * 1000; // Par tranche de 15 minutes
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const record = rateLimitMap.get(ip);
+
+  if (!record) {
+    rateLimitMap.set(ip, { count: 1, lastReset: now });
+    return false;
+  }
+
+  if (now - record.lastReset > WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, lastReset: now });
+    return false;
+  }
+
+  if (record.count >= LIMIT) {
+    return true;
+  }
+
+  record.count++;
+  return false;
+}
+
+// --- CONFIGURATION DE LA VALIDATION (ZOD) ---
+const contactSchema = z.object({
+  name: z.string().min(2, { message: "Le nom est trop court." }),
+  email: z.string().email({ message: "L'adresse email est invalide." }),
+  message: z.string().min(10, { message: "Le message est trop court." }),
+  website: z.string().optional(), // Le champ piège (honeypot)
+});
 
 export async function POST(req: Request) {
   try {
-    const { name, email, message } = await req.json();
+    // 1. VÉRIFICATION DU RATE LIMITING (IP)
+    const ip = req.headers.get('x-forwarded-for') ?? 'unknown';
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: 'Trop de requêtes. Veuillez réessayer dans 15 minutes.' }, 
+        { status: 429 }
+      );
+    }
 
-    // Envoi de l'email
+    // 2. RÉCUPÉRATION DES DONNÉES
+    const body = await req.json();
+
+    // 3. VÉRIFICATION DU HONEYPOT (ANTI-BOT)
+    // Si le champ "website" est rempli, c'est un bot. On fait semblant d'accepter.
+    if (body.website && body.website.length > 0) {
+      return NextResponse.json({ success: true, message: "Message envoyé" });
+    }
+
+    // 4. VALIDATION STRICTE DES DONNÉES
+    const parsedData = contactSchema.safeParse(body);
+    if (!parsedData.success) {
+      return NextResponse.json({ error: 'Données invalides' }, { status: 400 });
+    }
+
+    const { name, email, message } = parsedData.data;
+
+    // 5. ENVOI DE L'EMAIL VIA RESEND
     const { data, error } = await resend.emails.send({
-      // ⚠️ IMPORTANT : L'adresse "from" doit être un domaine vérifié sur Resend.
-      // En attendant, on utilise le domaine de test de Resend.
+      // ⚠️ REMPLACE PAR L'EMAIL DU CLIENT
       from: 'Formulaire Les Nuances <onboarding@resend.dev>', 
-      // L'EMAIL DU CLIENT
       to: ['isaacpro.beral@gmail.com'], 
       subject: `Nouveau message de ${name} via le site`,
-      // On peut utiliser du HTML simple ou un template React Email
       html: `
         <h2>Nouveau message depuis le site Les Nuances du Plaisir</h2>
         <p><strong>Nom :</strong> ${name}</p>
@@ -27,11 +84,13 @@ export async function POST(req: Request) {
     });
 
     if (error) {
-      return NextResponse.json({ error }, { status: 500 });
+      console.error("Erreur Resend:", error);
+      return NextResponse.json({ error: "Erreur lors de l'envoi de l'email" }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, data });
   } catch (error) {
-    return NextResponse.json({ error: 'Erreur lors de l\'envoi de l\'email' }, { status: 500 });
+    console.error("Erreur Serveur:", error);
+    return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });
   }
 }
